@@ -6,10 +6,16 @@ import { HeroSection } from "@/components/HeroSection";
 import { ReviewStats } from "@/components/ReviewStats";
 import { ReviewSection } from "@/components/ReviewSection";
 import { WriteReviewSection } from "@/components/WriteReviewSection";
+import { BackgroundSky } from "@/components/BackgroundSky";
+import { FloatingIcons, ScrollSection, ParallaxContainer } from "@/components/ScrollAnimations";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const Index = () => {
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [hasAcceptedDisclaimer, setHasAcceptedDisclaimer] = useState(false);
+
+  // Use our custom hook for scroll animations
+  useScrollAnimation(".animate-on-scroll", "animate-fade-in", { threshold: 0.2 });
 
   // Set up scroll animations
   useEffect(() => {
@@ -20,21 +26,6 @@ const Index = () => {
       section.classList.add("opacity-0");
     });
     
-    // Simple scroll animation observer
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("animate-fade-in");
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.2 });
-    
-    // Observe all sections with animate-on-scroll class
-    document.querySelectorAll(".animate-on-scroll").forEach((el) => {
-      observer.observe(el);
-    });
-    
     // Check if user has already accepted disclaimer in this session
     const disclaimerAccepted = sessionStorage.getItem('disclaimerAccepted');
     if (!disclaimerAccepted) {
@@ -42,11 +33,6 @@ const Index = () => {
     } else {
       setHasAcceptedDisclaimer(true);
     }
-    
-    // Cleanup observer on component unmount
-    return () => {
-      observer.disconnect();
-    };
   }, []);
 
   const handleDisclaimerAccept = () => {
@@ -60,13 +46,27 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
+      <BackgroundSky />
+      <FloatingIcons />
+      
       <Header />
-      <main className="overflow-hidden">
-        <HeroSection />
-        <ReviewStats />
-        <WriteReviewSection />
-        <ReviewSection />
+      <main className="overflow-hidden relative z-10">
+        <ParallaxContainer speed={0.2}>
+          <HeroSection />
+        </ParallaxContainer>
+        
+        <ScrollSection>
+          <ReviewStats />
+        </ScrollSection>
+        
+        <ScrollSection>
+          <WriteReviewSection />
+        </ScrollSection>
+        
+        <ScrollSection>
+          <ReviewSection />
+        </ScrollSection>
       </main>
     </div>
   );
