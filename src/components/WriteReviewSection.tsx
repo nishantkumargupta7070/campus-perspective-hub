@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { StarRating } from "@/components/StarRating";
 import { PenTool } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { StaffRating } from "@/components/StaffRating";
 
 export const WriteReviewSection = () => {
   const [showForm, setShowForm] = useState(false);
@@ -21,9 +21,14 @@ export const WriteReviewSection = () => {
     placement: 0,
     campus: 0,
     review: "",
-    recommend: 0
+    recommend: 0,
+    staffRatings: {}
   });
   const { toast } = useToast();
+
+  const handleStaffRatingChange = (staffRatings: any) => {
+    setFormData({...formData, staffRatings});
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,7 +56,8 @@ export const WriteReviewSection = () => {
       placement: 0,
       campus: 0,
       review: "",
-      recommend: 0
+      recommend: 0,
+      staffRatings: {}
     });
     setShowForm(false);
   };
@@ -191,6 +197,9 @@ export const WriteReviewSection = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Add the new Staff Rating component */}
+                <StaffRating onChange={handleStaffRatingChange} />
 
                 <div>
                   <Label htmlFor="review" className="text-base font-semibold">Your Review *</Label>
