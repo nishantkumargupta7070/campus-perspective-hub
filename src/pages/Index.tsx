@@ -6,7 +6,6 @@ import { HeroSection } from "@/components/HeroSection";
 import { ReviewStats } from "@/components/ReviewStats";
 import { ReviewSection } from "@/components/ReviewSection";
 import { WriteReviewSection } from "@/components/WriteReviewSection";
-import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { ErrorBoundary } from "react-error-boundary";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
@@ -28,14 +27,27 @@ const Index = () => {
   const [hasAcceptedDisclaimer, setHasAcceptedDisclaimer] = useState(false);
 
   // Set up scroll animations
-  useScrollAnimation(".animate-on-scroll", "animate-fade-in", { threshold: 0.2 });
-
   useEffect(() => {
     // Add animation classes to our main sections
     const sections = document.querySelectorAll("section");
     sections.forEach((section) => {
       section.classList.add("animate-on-scroll");
       section.classList.add("opacity-0");
+    });
+    
+    // Simple scroll animation observer
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("animate-fade-in");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    
+    // Observe all sections with animate-on-scroll class
+    document.querySelectorAll(".animate-on-scroll").forEach((el) => {
+      observer.observe(el);
     });
     
     // Check if user has already accepted disclaimer in this session
@@ -45,6 +57,11 @@ const Index = () => {
     } else {
       setHasAcceptedDisclaimer(true);
     }
+    
+    // Cleanup observer on component unmount
+    return () => {
+      observer.disconnect();
+    };
   }, []);
 
   const handleDisclaimerAccept = () => {
