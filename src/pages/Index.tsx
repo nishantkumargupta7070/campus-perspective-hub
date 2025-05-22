@@ -6,21 +6,6 @@ import { HeroSection } from "@/components/HeroSection";
 import { ReviewStats } from "@/components/ReviewStats";
 import { ReviewSection } from "@/components/ReviewSection";
 import { WriteReviewSection } from "@/components/WriteReviewSection";
-import { ErrorBoundary } from "react-error-boundary";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
-
-// Fallback component to render when errors occur
-const ErrorFallback = () => {
-  return (
-    <Alert variant="destructive" className="m-4">
-      <AlertCircle className="h-4 w-4" />
-      <AlertDescription>
-        Something went wrong loading the 3D components. Please refresh the page or try again later.
-      </AlertDescription>
-    </Alert>
-  );
-};
 
 const Index = () => {
   const [showDisclaimer, setShowDisclaimer] = useState(false);
@@ -78,9 +63,7 @@ const Index = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <main className="overflow-hidden">
-        <ErrorBoundary FallbackComponent={ErrorFallback}>
-          <HeroSection />
-        </ErrorBoundary>
+        <HeroSection />
         <ReviewStats />
         <WriteReviewSection />
         <ReviewSection />
